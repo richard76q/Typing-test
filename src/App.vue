@@ -1,11 +1,11 @@
 <template>
   <div class="full__container">
     <div class="container">
-      <WordForm :words="words" :completed="completedWords"/>
+      <WordForm :words="words" :completed="completedWords" :update="doUpdate"/>
       <div class="input-wrapper">
         <input 
+          v-model="inputValue.text" 
           @input="checkInput" 
-          :value="inputValue.name" 
           class="input-value" 
           type="text" 
           placeholder="Введите слово"
@@ -18,7 +18,7 @@
   </div>
 </template>
 
-<script>
+<script>  
 import MyButton from './components/UI/MyButton.vue';
 import WordForm from './components/WordForm.vue';
 
@@ -32,57 +32,74 @@ export default {
   data() {
     return {
       inputValue: {
-        name: '',
-        number: [],
-        id: 1,
+        text: '',
+        // id: 1,
       },
       dictionary: [
         'hello', 'world', 'console', 'log',
-        'const', 'var', 'let',
+        'const', 'var', 'let', 
         'null', 'underfined', 'boolen', 'number', 'bigint', 'string', 'symbol',
       ],
       words: [],
       indexWord: 0,
-      completedWords: []
+      completedWords: [],
+      doUpdate: 0
     }
   },
   methods: {
     checkInput(event) {
       const word = event.target.value;
-
+      
       if (word[0] === " ") {
-        this.inputValue = { text: '' };
-        return
+        this.inputValue.text = ''; return
       }
 
       if (word !== word.trim()) {
         this.checkWord(word.trim());
-        this.inputValue = { text: '' };
-        console.log(this.completedWords);
+        this.inputValue.text = '';
+        // console.log(this.completedWords);
       }
-    },
-    shuffle(array) {
-      array.sort(() => Math.random() - 0.5);
-      return array
-    },
-    shuffleWords(array) {
-      this.words = this.shuffle(array)
-    },
-    deleteWords() {
-      this.words = []
     },
     checkWord(word) {
       if (this.words[this.indexWord] == word) {
-        this.completedWords.push(1)
+        this.completedWords.push(1);
       } else {
-        this.completedWords.push(0)
+        this.completedWords.push(0);
       }
-      this.indexWord += 1
-    }
+      this.doUpdate += 1;
+      this.indexWord += 1;
+    },
+    shuffle(array) {
+      array.sort(() => Math.random() - 0.5);
+      return array;
+    },
+    deleteWords() {
+      this.words = [];
+      this.indexWord = 0;
+      this.completedWords = [];
+      this.inputValue.text = ''
+      this.doUpdate += 1;
+    },
+    shuffleWords(array) {
+      this.words = this.shuffle(array);
+      this.indexWord = 0;
+      this.completedWords = [];
+      this.inputValue.text = ''
+      this.doUpdate += 1;
+    },
   },
   mounted() {
-    this.shuffleWords(this.dictionary)
-  }
+    this.shuffleWords(this.dictionary);
+    this.doUpdate += 1;
+    
+    // this.doUpdate = true;
+    // через boolen значения оказалось тяжелее
+  },
+  // watch: {
+  //   doUpdate() {
+  //     // this.doUpdate = false;
+  //   }
+  // }
 }
 </script>
 

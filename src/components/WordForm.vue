@@ -1,12 +1,15 @@
 <template>
     <div class="wrapper">
         <div class="input-word">
-            <WordItem :words="words" />
+            <!-- <WordItem :words="wordsMod"/> -->
+            <WordItem :words="wordsMod"/>
+            <!-- <MyButton @click="correctAnswer">обновить</MyButton> -->
         </div>
     </div>
 </template>
 
 <script>
+// import MyButton from './UI/MyButton.vue';
 import WordItem from './WordItem.vue';
 
     export default {
@@ -20,19 +23,44 @@ import WordItem from './WordItem.vue';
             type: Array,
             default: () => [],
             required: true
+        },
+        update: {
+            type: Number,
+            // default: 0,
+            required: true
         }
     },
     data() {
         return {
+            wordsMod: [],
         };
     },
+    components: {
+    WordItem,
+    // MyButton
+},
+
     methods: {
-        checkWords() {
-            const Node = document.getElementsByClassName('container__word');
-            console.log(Node);
+        correctAnswer() {
+            const new_arr = [];
+
+            for (let i = 0; i < this.words.length; i++) {
+                if (i >= this.completed.length) {
+                    new_arr.push([this.words[i]])
+                    continue;
+                }
+                new_arr.push([this.words[i], this.completed[i]]);
+            }
+
+            this.wordsMod = new_arr;
+            // console.log(this.wordsMod);
         }
     },
-    components: { WordItem }
+    watch: {
+        update() {
+            this.correctAnswer();
+        }
+    }
 }
 </script>
 
