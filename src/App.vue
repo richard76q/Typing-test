@@ -10,7 +10,6 @@
           type="text" 
           placeholder="Введите слово &#9733;"
           autofocus
-          @focus="flashingСursor"
         >
         <MyButton @click="shuffleWords(this.dictionary)" color="#FFCBDB">начать</MyButton>
         <MyButton @click="deleteWords">откл</MyButton>
@@ -56,21 +55,52 @@ export default {
         this.inputValue.text = ''; return
       }
 
+      this.checkWordForMistake(word, this.words[this.indexWord])
+
       if (word !== word.trim()) {
         this.checkWord(word.trim());
         this.inputValue.text = '';
-        // console.log(this.completedWords);
       }
     },
     checkWord(word) {
+      this.checkLastMistake()
       if (this.words[this.indexWord] == word) {
-        this.completedWords.push(1);
+        this.addCompletedWords(1);
       } else {
-        this.completedWords.push(0);
+        this.addCompletedWords(0);
       }
       this.doUpdate += 1;
       this.indexWord += 1;
     },
+    checkWordForMistake(word1, word2) {
+      this.checkLastMistake();
+
+      for (let i = 0; i < word1.length; i++) {
+        if (word1[i] !== word2[i]) {
+          this.addCompletedWords(2);
+          this.doUpdate += 1;
+          console.log('add1')
+          return
+        }
+      }
+    },
+    checkLastMistake() {
+      if (this.completedWords.at(-1) === 2) {
+        this.delComletedWords();
+        this.doUpdate += 1;
+        console.log('del1')
+        return true
+      }
+    },
+    addCompletedWords(num) {
+      this.completedWords.push(num);
+    },
+    delComletedWords() {
+      console.log('pop1')
+      this.completedWords.pop();
+    },
+
+
     shuffle(array) {
       array.sort(() => Math.random() - 0.5);
       return array;
@@ -89,9 +119,6 @@ export default {
       this.inputValue.text = ''
       this.doUpdate += 1;
     },
-    flashingСursor() {
-      console.log(1)
-    }
   },
   mounted() {
     this.shuffleWords(this.dictionary);

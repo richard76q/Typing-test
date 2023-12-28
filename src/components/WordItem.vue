@@ -23,6 +23,8 @@
                 const ntype = list[1];
                 if (ntype === undefined) {
                     return
+                } else if (ntype === 2) {
+                    return "word-mistake"
                 } else if (ntype === 1) {
                     this.checkWord1();
                     return "comp-green"
@@ -65,5 +67,9 @@
 
 .comp-red {
     color: red;
+}
+
+.word-mistake {
+    background-color: #FFCBDB;
 }
 </style>
