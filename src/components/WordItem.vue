@@ -15,16 +15,16 @@
         },
         data() {
             return {
-                marginTop: '-0px'
+                marginTop: '0px'
             }
         },
         methods: {
             giveClass(list) {
                 const ntype = list[1];
                 if (ntype === undefined) {
-                    // console.log('none')
                     return
                 } else if (ntype === 1) {
+                    this.checkWord1();
                     return "comp-green"
                 } else if (ntype === 0) {
                     return "comp-red"
@@ -32,26 +32,31 @@
                     console.log("error")
                 }
             },
+            
+            checkWord1() {
+                const node = document.querySelector(".container__word");
+                console.log(node.height);
+                return node
+            }
         }
     }
 </script>
 
 <style scoped>
 .container__word {
-    /* box-sizing: border-box; */
-    /* margin-top: -40px;    */
     word-break: break-all;
     user-select: none;
 }
 
 .word {
     display: inline-block;
-    font-size: 2.2em;
+    font-size: 2.6em;
     line-height: 1.2em;
     font-weight: 600;
     /* margin: 0px 2px; */
-    padding: 3px 5px;
+    padding: 4px 7px;
     color: #61c9ff;
+    /* color: #000; */
 }
 
 .comp-green {

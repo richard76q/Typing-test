@@ -21,7 +21,7 @@
     /* text-align: center; */
     /* background-color: #FFCBDB; */
     border: none;
-    font-size: 24px;
+    font-size: 32px;
     line-height: 30px;
 }
 </style>

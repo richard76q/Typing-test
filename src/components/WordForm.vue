@@ -1,7 +1,6 @@
 <template>
     <div class="wrapper">
         <div class="input-word">
-            <!-- <WordItem :words="wordsMod"/> -->
             <WordItem :words="wordsMod"/>
             <!-- <MyButton @click="correctAnswer">обновить</MyButton> -->
         </div>
@@ -53,7 +52,6 @@ import WordItem from './WordItem.vue';
             }
 
             this.wordsMod = new_arr;
-            // console.log(this.wordsMod);
         }
     },
     watch: {
@@ -67,17 +65,16 @@ import WordItem from './WordItem.vue';
 <style scoped>
 
 .wrapper {
-    width: 800px;
+    width: 1000px;
 }
 
 .input-word {
-    max-width: 1000px;
-    max-height: 120px;
-    /* width: 800px;
-    height: 40px; */
+    max-height: 140px;
+    height: 140px;
     padding: 5px 10px 40px 10px; 
-    /* background-color: #000; */
-    border: 4px solid #000;
+    border: 8px solid #000;
+    border-top: 10px solid #000;
+    border-bottom: 0;
     overflow: hidden;
 
 }

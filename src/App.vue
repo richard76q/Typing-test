@@ -8,8 +8,9 @@
           @input="checkInput" 
           class="input-value" 
           type="text" 
-          placeholder="Введите слово"
+          placeholder="Введите слово &#9733;"
           autofocus
+          @focus="flashingСursor"
         >
         <MyButton @click="shuffleWords(this.dictionary)" color="#FFCBDB">начать</MyButton>
         <MyButton @click="deleteWords">откл</MyButton>
@@ -39,6 +40,7 @@ export default {
         'hello', 'world', 'console', 'log',
         'const', 'var', 'let', 
         'null', 'underfined', 'boolen', 'number', 'bigint', 'string', 'symbol',
+        'assert', 'clear', 'count', 'debug', 'dir', 'error', 'group', 'info'
       ],
       words: [],
       indexWord: 0,
@@ -87,6 +89,9 @@ export default {
       this.inputValue.text = ''
       this.doUpdate += 1;
     },
+    flashingСursor() {
+      console.log(1)
+    }
   },
   mounted() {
     this.shuffleWords(this.dictionary);
@@ -112,6 +117,11 @@ export default {
   box-sizing: border-box;
 }
 
+#app {
+  max-width: 1920px;
+}
+
+
 .full__container {
   display: flex;
   justify-content: center;
@@ -119,7 +129,7 @@ export default {
 
 .container {
   margin: 0 100px;
-  margin-top: 100px;
+  margin-top: 120px;
 }
 
 
@@ -127,16 +137,29 @@ export default {
   display: flex;
   justify-content: center;
   width: 100%;
-  padding: 10px;
-  background-color: black;
-  height: 60px;
+  padding: 20px 10px;
+  background-color: #000;
+  height: 100px;
 }
 
 .input-value {
-  padding: 10px;
+  padding: 10px 20px;
   /* margin-top: 100px; */
-  font-size: 24px;
-  width: 400px;
-  height: 40px;
+  font-size: 32px;
+  line-height: 1.2em;
+  font-weight: 600;
+  /* color: #61c9ff; */
+  /* color: #00bfff; */
+  color: #333;
+  width: 500px;
+  height: 60px;
+}
+
+.input-value::placeholder {
+  color: #555;
+}
+
+.input-value:focus::placeholder {
+  color: #888;
 }
 </style>
