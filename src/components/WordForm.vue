@@ -1,9 +1,10 @@
 <template>
     <div class="wrapper">
         <div class="input-word">
-            <WordItem :words="wordsMod"/>
+            <WordItem :words="wordsMod" :moveDown="moveDown"/>
             <!-- <MyButton @click="correctAnswer">обновить</MyButton> -->
         </div>
+        <!-- <button @click="checkInput">da</button> -->
     </div>
 </template>
 
@@ -27,6 +28,10 @@ import WordItem from './WordItem.vue';
             type: Number,
             // default: 0,
             required: true
+        },
+        moveDown: {
+            type: Number,
+            required: false
         }
     },
     data() {
@@ -52,6 +57,11 @@ import WordItem from './WordItem.vue';
             }
 
             this.wordsMod = new_arr;
+        },
+        checkInput() {
+            const word = document.getElementsByClassName("input-word");
+            // const heightWord = word.offsetHeight 
+            console.log(word[0].offsetHeight)
         }
     },
     watch: {
@@ -69,9 +79,9 @@ import WordItem from './WordItem.vue';
 }
 
 .input-word {
-    max-height: 140px;
-    height: 140px;
-    padding: 5px 10px 40px 10px; 
+    max-height: 145px;
+    height: 145px;
+    padding: 5px 10px 70px 10px; 
     border: 8px solid #000;
     border-top: 10px solid #000;
     border-bottom: 0;

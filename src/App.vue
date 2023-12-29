@@ -1,7 +1,7 @@
 <template>
   <div class="full__container">
     <div class="container">
-      <WordForm :words="words" :completed="completedWords" :update="doUpdate"/>
+      <WordForm :words="words" :completed="completedWords" :update="doUpdate" :moveDown="doMoveDown"/>
       <div class="input-wrapper">
         <input 
           v-model="inputValue.text" 
@@ -13,6 +13,7 @@
         >
         <MyButton @click="shuffleWords(this.dictionary)" color="#FFCBDB">начать</MyButton>
         <MyButton @click="deleteWords">откл</MyButton>
+        <MyButton @click="downWordItem">вниз</MyButton>  <!-- костыль (( -->
       </div>
     </div>
   </div>
@@ -31,107 +32,114 @@ export default {
 },
   data() {
     return {
-      inputValue: {
-        text: '',
+      inputValue: {  
+        text: '',  // при изменение этого значение input будет меняться
         // id: 1,
       },
-      dictionary: [
+      dictionary: [  // библиотека слов
         'hello', 'world', 'console', 'log',
         'const', 'var', 'let', 
         'null', 'underfined', 'boolen', 'number', 'bigint', 'string', 'symbol',
-        'assert', 'clear', 'count', 'debug', 'dir', 'error', 'group', 'info'
+        'assert', 'clear', 'count', 'debug', 'dir', 'error', 'group', 'info',
+
+        'hello', 'world', 'console', 'log',
+        'const', 'var', 'let', 
+        'null', 'underfined', 'boolen', 'number', 'bigint', 'string', 'symbol',
+        'assert', 'clear', 'count', 'debug', 'dir', 'error', 'group', 'info',
       ],
-      words: [],
-      indexWord: 0,
-      completedWords: [],
-      doUpdate: 0
+      words: [],  // слова которые отправляются в WordForm для отрисовки
+      indexWord: 0,  // индекс this.words
+      completedWords: [],  // массив отвечаюзий за раскрашивание слов по результатам вычеслений 
+                           //[0 - неправильный ответ, 1 - правильный ответ, 2 - динамическая ошибка]
+      doUpdate: 0,  // переменная которая проверяется в WordForm на обновление и после обновляет массив слов в окне
+      doMoveDown: 0  // временный костыль
     }
   },
   methods: {
     checkInput(event) {
-      const word = event.target.value;
+      const word = event.target.value;  // получения значения из input
       
-      if (word[0] === " ") {
+      if (word[0] === " ") {  // защита от нажатие первого пробела
         this.inputValue.text = ''; return
       }
 
-      this.checkWordForMistake(word, this.words[this.indexWord])
+      this.checkWordForMistake(word, this.words[this.indexWord])  // проверяет word и след. по индексу this.words на ошибки
 
-      if (word !== word.trim()) {
+      if (word !== word.trim()) {    // отправет слова на проверку при нажатие на пробел
         this.checkWord(word.trim());
         this.inputValue.text = '';
       }
     },
-    checkWord(word) {
+    checkWord(word) {    // проверяет правильно ли написано слово
       this.checkLastMistake()
       if (this.words[this.indexWord] == word) {
         this.addCompletedWords(1);
       } else {
         this.addCompletedWords(0);
       }
-      this.doUpdate += 1;
-      this.indexWord += 1;
+      this.doUpdate += 1;   // обновляем список слов
+      this.indexWord += 1;  // добавляем индекс для проверки this.words
+      this.addCompletedNext();
     },
-    checkWordForMistake(word1, word2) {
+    checkWordForMistake(word1, word2) {  // динамическая проверка слов на ошибки
       this.checkLastMistake();
 
-      for (let i = 0; i < word1.length; i++) {
+      for (let i = 0; i < word1.length; i++) {  // сравнивает word1 с word2 по длине word1
         if (word1[i] !== word2[i]) {
           this.addCompletedWords(2);
           this.doUpdate += 1;
-          console.log('add1')
-          return
+          return 
         }
       }
+      this.addCompletedNext();
     },
-    checkLastMistake() {
-      if (this.completedWords.at(-1) === 2) {
+    checkLastMistake() {  // удаление поледней диманической ошибки или (следующие) слова
+      if (this.completedWords.at(-1) === 2  || this.completedWords.at(-1) === 3) {
         this.delComletedWords();
         this.doUpdate += 1;
-        console.log('del1')
-        return true
       }
     },
-    addCompletedWords(num) {
+
+    addCompletedNext() {  // добавление 3 в this.completedWords
+      this.addCompletedWords(3);
+      this.doUpdate += 1;
+    },
+
+    addCompletedWords(num) {  // добавляем результаты в this.completedWords
       this.completedWords.push(num);
     },
-    delComletedWords() {
-      console.log('pop1')
+    delComletedWords() {  // удаление последнего this.completedWords
       this.completedWords.pop();
     },
 
 
-    shuffle(array) {
+
+    shuffle(array) {  // размешивает списки и возращает
       array.sort(() => Math.random() - 0.5);
       return array;
     },
-    deleteWords() {
+    deleteWords() {  // обнуление всех значений
       this.words = [];
-      this.indexWord = 0;
-      this.completedWords = [];
-      this.inputValue.text = ''
-      this.doUpdate += 1;
+      this.reset();
     },
-    shuffleWords(array) {
+    shuffleWords(array) {  // размешивание this.words и обнуление значений
       this.words = this.shuffle(array);
+      this.reset();
+      this.addCompletedNext();
+    },
+    reset() {  // обнуление
       this.indexWord = 0;
       this.completedWords = [];
       this.inputValue.text = ''
       this.doUpdate += 1;
     },
+    downWordItem() {  // костыль для промотки списка слов
+      this.doMoveDown += 1;
+    }
   },
-  mounted() {
+  mounted() {  // встоенная функция сайта
     this.shuffleWords(this.dictionary);
-    this.doUpdate += 1;
-    
-    // this.doUpdate = true;
-    // через boolen значения оказалось тяжелее
-  },
-  // watch: {
-  //   doUpdate() {
-  //     // this.doUpdate = false;
-  //   }
-  // }
+  }
 }
 </script>
 
