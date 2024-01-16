@@ -1,19 +1,19 @@
 <template>
   <div class="full__container">
     <div class="container">
-      <WordForm :words="words" :completed="completedWords" :update="doUpdate" :moveDown="doMoveDown"/>
+      <!-- <WordForm :words="words" :completed="completedWords" :update="doUpdate" :id="indexWord" :updateWordHeight="updateWordHeight"/> -->
+      <WordForm :words="words" :completed="completedWords" :update="doUpdate" :id="indexWord"/>
       <div class="input-wrapper">
         <input 
           v-model="inputValue.text" 
           @input="checkInput" 
           class="input-value" 
           type="text" 
-          placeholder="Введите слово &#9733;"
+          placeholder="Введите слово"
           autofocus
         >
         <MyButton @click="shuffleWords(this.dictionary)" color="#FFCBDB">начать</MyButton>
         <MyButton @click="deleteWords">откл</MyButton>
-        <MyButton @click="downWordItem">вниз</MyButton>  <!-- костыль (( -->
       </div>
     </div>
   </div>
@@ -34,30 +34,41 @@ export default {
     return {
       inputValue: {  
         text: '',  // при изменение этого значение input будет меняться
-        // id: 1,
+        // IdCounts: 0,
       },
       dictionary: [  // библиотека слов
         'hello', 'world', 'console', 'log',
         'const', 'var', 'let', 
-        'null', 'underfined', 'boolen', 'number', 'bigint', 'string', 'symbol',
+        'null', 'undefined', 'boolen', 'number', 'bigint', 'string', 'symbol',
         'assert', 'clear', 'count', 'debug', 'dir', 'error', 'group', 'info',
 
         'hello', 'world', 'console', 'log',
         'const', 'var', 'let', 
-        'null', 'underfined', 'boolen', 'number', 'bigint', 'string', 'symbol',
+        'null', 'undefined', 'boolen', 'number', 'bigint', 'string', 'symbol',
         'assert', 'clear', 'count', 'debug', 'dir', 'error', 'group', 'info',
       ],
-      words: [],  // слова которые отправляются в WordForm для отрисовки
+      words: [],  // слова которые отправляются в WordForm после для отрисовки в WordItem
       indexWord: 0,  // индекс this.words
       completedWords: [],  // массив отвечаюзий за раскрашивание слов по результатам вычеслений 
-                           //[0 - неправильный ответ, 1 - правильный ответ, 2 - динамическая ошибка]
+                           //[0 - неправильный ответ, 1 - правильный ответ, 2 - динамическая ошибка, 3 - следующее слово]
       doUpdate: 0,  // переменная которая проверяется в WordForm на обновление и после обновляет массив слов в окне
-      doMoveDown: 0  // временный костыль
+      // updateWordHeight: 0
     }
   },
   methods: {
     checkInput(event) {
       const word = event.target.value;  // получения значения из input
+
+      if (this.words.length === 0) {  // заканчиваем цикл если this.words пустой 
+        console.log('empty')
+        return
+      }
+
+      if (this.indexWord >= this.words.length) {  // конец
+        this.inputValue.text = "Вы прошли"
+        return
+      }
+      
       
       if (word[0] === " ") {  // защита от нажатие первого пробела
         this.inputValue.text = ''; return
@@ -118,24 +129,23 @@ export default {
       array.sort(() => Math.random() - 0.5);
       return array;
     },
+    shuffleWords(array) {  // размешивание this.words и обнуление значений
+      this.words = this.shuffle(array);
+      this.reset();
+      // this.updateWordHeight += 1;
+      this.addCompletedNext();
+    },
     deleteWords() {  // обнуление всех значений
       this.words = [];
       this.reset();
     },
-    shuffleWords(array) {  // размешивание this.words и обнуление значений
-      this.words = this.shuffle(array);
-      this.reset();
-      this.addCompletedNext();
-    },
     reset() {  // обнуление
+      this.inputValue.text = '';
       this.indexWord = 0;
       this.completedWords = [];
-      this.inputValue.text = ''
+      // this.updateWordHeight += 1;
       this.doUpdate += 1;
     },
-    downWordItem() {  // костыль для промотки списка слов
-      this.doMoveDown += 1;
-    }
   },
   mounted() {  // встоенная функция сайта
     this.shuffleWords(this.dictionary);

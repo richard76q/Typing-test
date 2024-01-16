@@ -1,15 +1,13 @@
 <template>
     <div class="wrapper">
         <div class="input-word">
-            <WordItem :words="wordsMod" :moveDown="moveDown"/>
-            <!-- <MyButton @click="correctAnswer">обновить</MyButton> -->
+            <!-- <WordItem :words="wordsMod" :updateWordheight="updateWordHeight" :id="id"/> -->
+            <WordItem :words="wordsMod" :id="id"/>
         </div>
-        <!-- <button @click="checkInput">da</button> -->
     </div>
 </template>
 
 <script>
-// import MyButton from './UI/MyButton.vue';
 import WordItem from './WordItem.vue';
 
     export default {
@@ -29,7 +27,11 @@ import WordItem from './WordItem.vue';
             // default: 0,
             required: true
         },
-        moveDown: {
+        // updateWordHeight: {
+        //     type: Number,
+        //     required: false
+        // },
+        id: {
             type: Number,
             required: false
         }
@@ -37,11 +39,11 @@ import WordItem from './WordItem.vue';
     data() {
         return {
             wordsMod: [],
+            wordId: [],
         };
     },
     components: {
     WordItem,
-    // MyButton
 },
 
     methods: {
@@ -55,20 +57,18 @@ import WordItem from './WordItem.vue';
                 }
                 new_arr.push([this.words[i], this.completed[i]]);
             }
-
             this.wordsMod = new_arr;
         },
-        checkInput() {
-            const word = document.getElementsByClassName("input-word");
-            // const heightWord = word.offsetHeight 
-            console.log(word[0].offsetHeight)
-        }
     },
     watch: {
         update() {
             this.correctAnswer();
         }
-    }
+    },
+    // created() {
+    //     this.updateWordheight += 1;
+    //     console.log(this.updateWordHeight)
+    // }
 }
 </script>
 
